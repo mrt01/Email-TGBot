@@ -1,21 +1,21 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const TelegramBot = require("node-telegram-bot-api");
+const cors = require("cors"); // Добавлено
 
 const app = express();
 const port = 3001;
 
-const telegramBotToken = "6217160437:AAE_J1ro2h53C2wFF0nkABsGLVcxq_OesRg";
-const telegramChatId = "489033397";
+const telegramBotToken = "ваш_токен";
+const telegramChatId = "ваш_chat_id";
 
-// Создание эк бота
 const bot = new TelegramBot(telegramBotToken);
 
-// Добавление middleware для обработки данных формы
+app.use(cors()); // Добавлено
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Обработка запроса на отправку формы
 app.post("/form", (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
@@ -25,7 +25,6 @@ app.post("/form", (req, res) => {
 
   const text = `Новое сообщение из формы на сайте:\nИмя: ${name}\nEmail: ${email}\nСообщение: ${message}`;
 
-  // Отправка сообщения в телегу
   bot
     .sendMessage(telegramChatId, text)
     .then(() => {
@@ -37,7 +36,6 @@ app.post("/form", (req, res) => {
     });
 });
 
-// Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
